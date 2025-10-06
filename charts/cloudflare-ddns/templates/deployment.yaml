@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cloudflare-ddns.fullname" . }}
+  labels:
+    {{- include "cloudflare-ddns.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "cloudflare-ddns.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cloudflare-ddns.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: CLOUDFLARE_API_TOKEN_FILE
+              value: {{ .Values.cloudflareApiTokenFile }}
+          {{- if .Values.domains }}
+            - name: DOMAINS
+              value: {{ .Values.domains | quote }}
+          {{- end }}
+          {{- if .Values.ip4Domains }}
+            - name: IP4_DOMAINS
+              value: {{ .Values.ip4Domains | quote }}
+          {{- end }}
+          {{- if .Values.ip6Domains }}
+            - name: IP6_DOMAINS
+              value: {{ .Values.ip6Domains | quote }}
+          {{- end }}
+          {{ if .Values.wafLists }}
+            - name: WAF_LISTS
+              value: {{ .Values.wafLists | quote }}
+          {{- end }}
+            - name: IP4_PROVIDER
+              value: {{ .Values.ip4Provider | quote }}
+            - name: IP6_PROVIDER
+              value: {{ .Values.ip6Provider | quote }}
+            - name: CACHE_EXPIRATION
+              value: {{ .Values.cacheExpiration | quote }}
+            - name: DELETE_ON_STOP
+              value: {{ .Values.deleteOnStop | quote }}
+            - name: TZ
+              value: {{ .Values.timzezone | quote }}
+            - name: UPDATE_CRON
+              value: {{ .Values.updateCron | quote }}
+            - name: UPDATE_ON_START
+              value: {{ .Values.updateOnStart | quote }}
+            - name: DETECTION_TIMEOUT
+              value: {{ .Values.detectionTimeout | quote }}
+            - name: UPDATE_TIMEOUT
+              value: {{ .Values.updateTimeout | quote }}
+            - name: PROXIED
+              value: {{ .Values.proxied | quote }}
+            - name: TTL
+              value: {{ .Values.TTL | quote }}
+            - name: RECORD_COMMENT
+              value: {{ .Values.recordComment | quote }}
+            - name: WAF_LIST_DESCRIPTION
+              value: {{ .Values.wafListDescription | quote }}
+            - name: EMOJI
+              value: {{ .Values.logEmojiEnabled | quote }}
+            - name: QUIET
+              value: {{ .Values.quiet | quote }}
+            - name: HEALTHCHECKS
+              value: {{ .Values.healtcheckPingUrl | quote }}
+            - name: UPTIMEKUMA
+              value: {{ .Values.uptimeKumaUrl | quote }}
+            - name: SHOUTRRR
+              value: {{ .Values.shoutrrrUrls | quote }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
