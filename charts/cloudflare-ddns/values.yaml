@@ -100,31 +100,64 @@ tolerations: []
 
 affinity: {}
 
+# Fully qualified domain names or wildcard domain names that the updater
+# should manage for both A and AAAA records. Listing a domain in DOMAINS
+# is equivalent to listing the same domain in both IP4_DOMAINS and IP6_DOMAINS
 domains: []
+# Fully qualified domain names or wildcard domain names that the updater should
+# manage for A records
 ip4Domains: []
+# Fully qualified domain names or wildcard domain names that the updater should
+# manage for AAAA records
 ip6Domains: []
+# WAF lists the updater should manage. A list reference is written in the
+# format <account-id>/<list-name> where account-id is your account ID and
+# list-name is the list name; it should look like
+# 0123456789abcdef0123456789abcdef/mylist. If the referenced WAF list does not
+# exist, the updater will try to create it.
 wafLists: []
 
+# This specifies how to detect the current IPv4 address
 ip4Provider: cloudflare.trace
+# This specifies how to detect the current IPv6 address
 ip6Provider: cloudflare.trace
 
+# The expiration of cached Cloudflare API responses
 cacheExpiration: "6h0m0s"
+# Whether managed DNS records and WAF lists should be deleted on exit
 deleteOnStop: "false"
+# The timezone used for logging messages and parsing cron configurations
 timzezone: "UTC"
+# The schedule to re-check IP addresses and update DNS records and WAF lists
 updateCron: "@every 5m"
+# Whether to check IP addresses and update records immediately on start
 updateOnStart: "true"
-
+# The timeout of each attempt to detect IP address
 detectionTimeout: "5s"
+# The timeout of each attempt to update records
 updateTimeout: "30s"
 
+# Whether new DNS records should be proxied by Cloudflare
 proxied: "false"
+# The time-to-live (TTL) (in seconds) of new DNS records. "1" means "automatic"
+# to Cloudflare
 TTL: 1
+# The record comment of new DNS records
 recordComment: ""
+# The text description of new WAF lists
 wafListDescription: ""
 
+# Whether the updater should use emojis in the logging
 logEmojiEnabled: "true"
+# Whether the updater should reduce the logging
 quiet: "false"
 
+# The Healthchecks ping URL to ping when the updater successfully updates IP
+# addresses
 healtcheckPingUrl: ""
+# The Uptime Kuma’s Push URL to ping when the updater successfully updates IP
+# addresses
 uptimeKumaUrl: ""
+# Newline-separated shoutrrr URLs to which the updater sends notifications of
+# IP address changes and other events.
 shoutrrrUrls: ""
