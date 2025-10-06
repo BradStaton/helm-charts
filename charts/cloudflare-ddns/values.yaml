@@ -119,7 +119,7 @@ updateOnStart: "true"
 detectionTimeout: "5s"
 updateTimeout: "30s"
 
-proxied: "true"
+proxied: "false"
 TTL: 1
 recordComment: ""
 wafListDescription: ""
