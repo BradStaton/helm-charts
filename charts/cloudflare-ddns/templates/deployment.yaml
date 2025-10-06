@@ -44,19 +44,19 @@ spec:
               value: {{ .Values.cloudflareApiTokenFile }}
           {{- if .Values.domains }}
             - name: DOMAINS
-              value: {{ .Values.domains | quote }}
+              value: {{ .Values.domains | join "," | quote }}
           {{- end }}
           {{- if .Values.ip4Domains }}
             - name: IP4_DOMAINS
-              value: {{ .Values.ip4Domains | quote }}
+              value: {{ .Values.ip4Domains | join "," | quote }}
           {{- end }}
           {{- if .Values.ip6Domains }}
             - name: IP6_DOMAINS
-              value: {{ .Values.ip6Domains | quote }}
+              value: {{ .Values.ip6Domains | join "," | quote }}
           {{- end }}
           {{ if .Values.wafLists }}
             - name: WAF_LISTS
-              value: {{ .Values.wafLists | quote }}
+              value: {{ .Values.wafLists | join "," | quote }}
           {{- end }}
             - name: IP4_PROVIDER
               value: {{ .Values.ip4Provider | quote }}
