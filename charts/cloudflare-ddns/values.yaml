@@ -102,10 +102,10 @@ affinity: {}
 
 cloudflareApiTokenFile: /run/secrets/cloudlare_api_token
 
-domains: []
-ip4Domains: []
-ip6Domains: []
-wafLists: []
+domains: ""
+ip4Domains: ""
+ip6Domains: ""
+wafLists: ""
 
 ip4Provider: cloudflare.trace
 ip6Provider: cloudflare.trace
