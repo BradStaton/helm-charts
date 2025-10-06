@@ -41,7 +41,7 @@ spec:
           {{- end }}
           env:
             - name: CLOUDFLARE_API_TOKEN_FILE
-              value: {{ .Values.cloudflareApiTokenFile }}
+              value: "/run/secrets/cloudlare_api_token"
           {{- if .Values.domains }}
             - name: DOMAINS
               value: {{ .Values.domains | join "," | quote }}
